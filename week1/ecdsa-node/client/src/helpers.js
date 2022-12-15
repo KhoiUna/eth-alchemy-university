@@ -8,7 +8,7 @@ export function hashMessage(message) {
   return hash;
 }
 
-export async function signMessage(msg, privateKey) {
+export async function signMessage(msg, privateKey, recovered = true) {
   const hash = hashMessage(msg);
-  return await secp.sign(hash, privateKey, { recovered: true });
+  return await secp.sign(hash, privateKey, { recovered });
 }
