@@ -1,6 +1,6 @@
 const secp = require("ethereum-cryptography/secp256k1");
 const { keccak256 } = require("ethereum-cryptography/keccak");
-const { toHex } = require("ethereum-cryptography/utils");
+const { toHex, utf8ToBytes } = require("ethereum-cryptography/utils");
 
 function getAddress(publicKey) {
   const slicedKey = publicKey.slice(1);
@@ -8,12 +8,7 @@ function getAddress(publicKey) {
   return hash.slice(-20);
 }
 
-async function recoverKey(message, signature, recoveryBit) {
-  const hash = hashMessage(message);
-  return secp.recoverPublicKey(hash, signature, recoveryBit);
-}
-
-async function generateBalances(numberOfBalances = 3) {
+function generateBalances(numberOfBalances = 3) {
   function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -38,19 +33,19 @@ async function generateBalances(numberOfBalances = 3) {
   return balances;
 }
 
-function hashMessage(message) {
-  const bytes = utf8ToBytes(message);
-  const hash = keccak256(bytes);
-  return hash;
-}
+function recoverPublicKeyFromSignature(message, signature, recoveryBit) {
+  function hashMessage(message) {
+    const bytes = utf8ToBytes(JSON.stringify(message));
+    const hash = keccak256(bytes);
+    return hash;
+  }
 
-async function recoverKey(message, signature, recoveryBit) {
   const hash = hashMessage(message);
   return secp.recoverPublicKey(hash, signature, recoveryBit);
 }
 
 module.exports = {
   getAddress,
-  recoverKey,
+  recoverPublicKeyFromSignature,
   generateBalances,
 };
