@@ -43,7 +43,7 @@ function App() {
   const [privateKey, setPrivatekey] = useState("");
 
   useEffect(() => {
-    if (address) {
+    if (address && address.length >= 42) {
       const { privateKey } = balances.find(
         (balance) => balance.address === address
       );

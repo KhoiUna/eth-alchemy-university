@@ -3,7 +3,7 @@ import { hashMessage, signMessage } from "./helpers";
 import server from "./server";
 import { toHex } from "ethereum-cryptography/utils";
 
-function Transfer({ address, setBalance, privateKey }) {
+function Transfer({ setBalance, privateKey }) {
   const [sendAmount, setSendAmount] = useState("");
   const [recipient, setRecipient] = useState("");
 
@@ -12,7 +12,7 @@ function Transfer({ address, setBalance, privateKey }) {
   async function transfer(evt) {
     evt.preventDefault();
 
-    // TODO: sign message here
+    // Sign message here to create signature
     const msg = {
       amount: parseInt(sendAmount),
       recipient,
