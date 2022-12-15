@@ -3,6 +3,7 @@ import Transfer from "./Transfer";
 import "./App.scss";
 import { useState } from "react";
 import server from "./server";
+import { useEffect } from "react";
 
 const { data: balances } = await server.get("/generate-balances");
 const Balance = () => {
@@ -13,8 +14,8 @@ const Balance = () => {
       </u>
 
       <div>
-        {balances.map(({ privateKey, publicKey, address, balance }) => (
-          <div className="balance_container">
+        {balances.map(({ privateKey, publicKey, address, balance }, index) => (
+          <div className="balance_container" key={index}>
             <p>
               <b>Private key:</b> {privateKey}
             </p>
@@ -38,20 +39,31 @@ const Balance = () => {
 
 function App() {
   const [balance, setBalance] = useState(0);
-  const [signature, setSignature] = useState("");
-  const [privateKey, setPrivateKey] = useState("");
+  const [address, setAddress] = useState("");
+  const [privateKey, setPrivatekey] = useState("");
+
+  useEffect(() => {
+    if (address) {
+      const { privateKey } = balances.find(
+        (balance) => balance.address === address
+      );
+      setPrivatekey(privateKey);
+    }
+  }, [address]);
 
   return (
     <div className="app">
       <Wallet
         balance={balance}
         setBalance={setBalance}
-        privateKey={privateKey}
-        setPrivateKey={setPrivateKey}
-        address={signature}
-        setAddress={setSignature}
+        address={address}
+        setAddress={setAddress}
       />
-      <Transfer setBalance={setBalance} address={signature} />
+      <Transfer
+        setBalance={setBalance}
+        address={address}
+        privateKey={privateKey}
+      />
       <Balance />
     </div>
   );
