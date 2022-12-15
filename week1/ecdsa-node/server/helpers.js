@@ -8,11 +8,6 @@ function getAddress(publicKey) {
   return hash.slice(-20);
 }
 
-async function signMessage(msg, privateKey) {
-  const hash = hashMessage(msg);
-  return secp.sign(hash, privateKey, { recovered: true });
-}
-
 async function recoverKey(message, signature, recoveryBit) {
   const hash = hashMessage(message);
   return secp.recoverPublicKey(hash, signature, recoveryBit);
@@ -35,17 +30,27 @@ async function generateBalances(numberOfBalances = 3) {
     balances.push({
       privateKey: toHex(privateKey),
       publicKey: toHex(publicKey),
-      address: toHex(address),
-      balance: getRandomInt(50, 101),
+      address: `0x${toHex(address)}`,
+      balance: getRandomInt(1, 11) * 10,
     });
   }
 
   return balances;
 }
 
+function hashMessage(message) {
+  const bytes = utf8ToBytes(message);
+  const hash = keccak256(bytes);
+  return hash;
+}
+
+async function recoverKey(message, signature, recoveryBit) {
+  const hash = hashMessage(message);
+  return secp.recoverPublicKey(hash, signature, recoveryBit);
+}
+
 module.exports = {
   getAddress,
-  signMessage,
   recoverKey,
   generateBalances,
 };
