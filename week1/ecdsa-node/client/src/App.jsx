@@ -7,13 +7,13 @@ import server from "./server";
 const { data: balances } = await server.get("/generate-balances");
 const Balance = () => {
   return (
-    <div className="balances">
+    <div className="container balances">
       <u>
         <h3>Test balances</h3>
       </u>
 
       <div>
-        {balances.map(({ privateKey, publicKey, address }) => (
+        {balances.map(({ privateKey, publicKey, address, balance }) => (
           <div className="balance_container">
             <p>
               <b>Private key:</b> {privateKey}
@@ -24,6 +24,10 @@ const Balance = () => {
             <p>
               <b>Address: </b>
               {address}
+            </p>
+            <p>
+              <b>Balance: </b>
+              {balance}
             </p>
           </div>
         ))}
